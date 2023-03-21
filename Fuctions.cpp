@@ -1,8 +1,8 @@
 #include "head.h"
 
 /***************************************************************************
-  函数名称：_insert
-  功    能：插入模式输入函数
+  ?????????_insert
+  ??    ???????????????
 ***************************************************************************/
 int Editor::_insert(char ch) {
 	GetConsoleScreenBufferInfo(hOutput, &csbi);
@@ -33,8 +33,8 @@ int Editor::_insert(char ch) {
 }
 
 /***************************************************************************
-  函数名称：cct_setcursor
-  功    能：设置光标状态（显示/不显示/全高/半高/横线等）
+  ?????????cct_setcursor
+  ??    ??????ù?????????/?????/???/???/??????
 ***************************************************************************/
 int Editor::setcursor(const int options)
 {
@@ -56,7 +56,7 @@ int Editor::setcursor(const int options)
 		cursor_info.dwSize = 1;
 		break;
 	case CURSOR_VISIBLE_NORMAL:
-	default: //缺省显示光标，横线
+	default: //????????????
 		cursor_info.bVisible = 1;
 		cursor_info.dwSize = 25;
 		break;
@@ -66,8 +66,8 @@ int Editor::setcursor(const int options)
 }
 
 /***************************************************************************
-  函数名称：Del
-  功    能：删除
+  ?????????Del
+  ??    ??????
 ***************************************************************************/
 int  Editor::Del(COORD pos) {
 	int i, j, k;
@@ -85,8 +85,8 @@ int  Editor::Del(COORD pos) {
 }
 
 /***************************************************************************
-  函数名称：Cancel
-  功    能：撤销
+  ?????????Cancel
+  ??    ???????
 ***************************************************************************/
 int Editor::Cancel() {
 	GetConsoleScreenBufferInfo(hOutput, &csbi);
@@ -102,16 +102,16 @@ int Editor::Cancel() {
 }
 
 /***************************************************************************
-  函数名称：cct_setconsoleborder
-  功    能：设置窗口和缓冲区大小
+  ?????????cct_setconsoleborder
+  ??    ??????????????????С
 ***************************************************************************/
 int Editor::cct_setconsoleborder(int set_cols, int set_lines, int set_buffer_cols, int set_buffer_lines)
 {
-	/* 取当前系统允许的窗口的行列最大值 */
+	/* ??????????????????????? */
 	COORD max_coord;
-	max_coord = GetLargestConsoleWindowSize(hOutput); /* .X 和 .Y 分别是窗口的列和行的最大值 */
+	max_coord = GetLargestConsoleWindowSize(hOutput); /* .X ?? .Y ??????????к??е????? */
 
-	/* 处理设置窗口的行列的非法值 */
+	/* ???????????????е???? */
 	if (set_cols <= 0 || set_lines <= 0)
 		return 0;
 	if (set_cols > max_coord.X)
@@ -119,58 +119,58 @@ int Editor::cct_setconsoleborder(int set_cols, int set_lines, int set_buffer_col
 	if (set_lines > max_coord.Y)
 		set_lines = max_coord.Y;
 
-	/* 设置窗口的行列大小（从0开始，0 ~ lines-1, 0 ~ cols-1）*/
+	/* ???????????д?С????0?????0 ~ lines-1, 0 ~ cols-1??*/
 	SMALL_RECT rect;
 	rect.Top = 0;
 	rect.Bottom = set_lines - 1;
 	rect.Left = 0;
 	rect.Right = set_cols - 1;
 
-	/* 设置缓冲区的行列大小(缺省或小于窗口值则与窗口值一样) */
+	/* ??????????????д?С(????С????????????????) */
 	COORD cr;
-	cr.X = (set_buffer_cols == -1 || set_buffer_cols < set_cols) ? set_cols : set_buffer_cols;		//未给出或给出的值小于set_cols则用set_cols，未控制上限
-	cr.Y = (set_buffer_lines == -1 || set_buffer_lines < set_lines) ? set_lines : set_buffer_lines;	//未给出或给出的值小于set_lines则用set_lines，未控制上限
+	cr.X = (set_buffer_cols == -1 || set_buffer_cols < set_cols) ? set_cols : set_buffer_cols;		//δ????????????С??set_cols????set_cols??δ????????
+	cr.Y = (set_buffer_lines == -1 || set_buffer_lines < set_lines) ? set_lines : set_buffer_lines;	//δ????????????С??set_lines????set_lines??δ????????
 
-	/* 取当前窗口及缓冲区的大小(就是getconsoleborder) */
+	/* ??????????????????С(????getconsoleborder) */
 	int cur_cols, cur_lines, cur_buffer_cols, cur_buffer_lines;
 	CONSOLE_SCREEN_BUFFER_INFO binfo;
 	GetConsoleScreenBufferInfo(hOutput, &binfo);
 
-	cur_cols = binfo.srWindow.Right - binfo.srWindow.Left + 1;	//可见窗口的列数
-	cur_lines = binfo.srWindow.Bottom - binfo.srWindow.Top + 1;	//可见窗口的行数
-	cur_buffer_cols = binfo.dwSize.X;							//缓冲区的列数
-	cur_buffer_lines = binfo.dwSize.Y;							//缓冲区的行数
+	cur_cols = binfo.srWindow.Right - binfo.srWindow.Left + 1;	//????????????
+	cur_lines = binfo.srWindow.Bottom - binfo.srWindow.Top + 1;	//????????????
+	cur_buffer_cols = binfo.dwSize.X;							//????????????
+	cur_buffer_lines = binfo.dwSize.Y;							//????????????
 
 	cct_cls();
-	/* 设置顺序(保证设置窗口大小时，现缓冲区的列值>窗口值) */
+	/* ???????(???????????С???????????????>?????) */
 	if (cr.X <= cur_buffer_cols) {
 		if (cr.Y <= cur_buffer_lines) {
-			SetConsoleWindowInfo(hOutput, true, &rect);//设置窗口
-			SetConsoleScreenBufferSize(hOutput, cr);//设置缓冲区
+			SetConsoleWindowInfo(hOutput, true, &rect);//???????
+			SetConsoleScreenBufferSize(hOutput, cr);//?????????
 		}
-		else { //cr.Y > cur_buffer_lines，先要让缓冲区的行数变大
+		else { //cr.Y > cur_buffer_lines?????????????????????
 			COORD tmpcr;
 			tmpcr.X = cur_buffer_cols;
 			tmpcr.Y = cr.Y;
-			SetConsoleScreenBufferSize(hOutput, tmpcr);//设置缓冲区
+			SetConsoleScreenBufferSize(hOutput, tmpcr);//?????????
 
-			SetConsoleWindowInfo(hOutput, true, &rect);//设置窗口
-			SetConsoleScreenBufferSize(hOutput, cr);//设置缓冲区
+			SetConsoleWindowInfo(hOutput, true, &rect);//???????
+			SetConsoleScreenBufferSize(hOutput, cr);//?????????
 		}
 	}
 	else {//cr.X > cur_buffer_cols
 		if (cr.Y >= cur_buffer_lines) {
-			SetConsoleScreenBufferSize(hOutput, cr);//设置缓冲区
-			SetConsoleWindowInfo(hOutput, true, &rect);//设置窗口
+			SetConsoleScreenBufferSize(hOutput, cr);//?????????
+			SetConsoleWindowInfo(hOutput, true, &rect);//???????
 		}
 		else {	//cr.Y < cur_buffer_lines
 			COORD tmpcr;
 			tmpcr.X = cr.X;
 			tmpcr.Y = cur_buffer_lines;
-			SetConsoleScreenBufferSize(hOutput, tmpcr);//设置缓冲区
+			SetConsoleScreenBufferSize(hOutput, tmpcr);//?????????
 
-			SetConsoleWindowInfo(hOutput, true, &rect);//设置窗口
-			SetConsoleScreenBufferSize(hOutput, cr);//设置缓冲区
+			SetConsoleWindowInfo(hOutput, true, &rect);//???????
+			SetConsoleScreenBufferSize(hOutput, cr);//?????????
 		}
 	}
 	return 0;
@@ -181,20 +181,20 @@ int Editor::cct_cls()
 	CONSOLE_SCREEN_BUFFER_INFO binfo; /* to get buffer info */
 	DWORD num;
 
-	/* 取当前缓冲区信息 */
+	/* ????????????? */
 	GetConsoleScreenBufferInfo(hOutput, &binfo);
-	/* 填充字符 */
+	/* ?????? */
 	FillConsoleOutputCharacter(hOutput, (TCHAR)' ', binfo.dwSize.X * binfo.dwSize.Y, coord, &num);
-	/* 填充属性 */
+	/* ??????? */
 	FillConsoleOutputAttribute(hOutput, binfo.wAttributes, binfo.dwSize.X * binfo.dwSize.Y, coord, &num);
 
-	/* 光标回到(0,0) */
+	/* ?????(0,0) */
 	SetConsoleCursorPosition(hOutput, coord);
 	return 0;
 }
 /***************************************************************************
-  函数名称：GetPos
-  功    能：取当前光标所在位置的坐标值
+  ?????????GetPos
+  ??    ??????????????λ????????
 ***************************************************************************/
 int Editor::GetPos(int& x, int& y)
 {
@@ -205,8 +205,8 @@ int Editor::GetPos(int& x, int& y)
     return 0;
 }
 /***************************************************************************
-  函数名称：Goto
-  功    能：定位函数
+  ?????????Goto
+  ??    ?????λ????
 ***************************************************************************/
 int Editor::Goto(const int X, const int Y)
 {
@@ -217,8 +217,8 @@ int Editor::Goto(const int X, const int Y)
     return 0;
 }
 /***************************************************************************
-  函数名称：StoreFile
-  功    能：储存文本到文件
+  ?????????StoreFile
+  ??    ???????????????
 ***************************************************************************/
 int Editor::StoreFile(string address) {
     ofstream outFile;
@@ -233,13 +233,13 @@ int Editor::StoreFile(string address) {
     return 0;
 };
 /***************************************************************************
-  函数名称：OpenFile
-  功    能：打开文件
+  ?????????OpenFile
+  ??    ????????
 ***************************************************************************/
 int Editor::OpenFile(string address) {
     ifstream in;
-    in.open(address);        //以读的方式打开文件
-    if (!in) {               //判断是否成功打开
+    in.open(address);        //????????????
+    if (!in) {               //?ж????????
 		pos.X =73;
 		if (pos.Y < 25)  pos.Y = 24;
 		else pos.Y = 49;
@@ -248,15 +248,15 @@ int Editor::OpenFile(string address) {
     }
 	else {
 		char ch[2 << 0];
-		in >> ch;                //读取文件内字符串，还有其他读取方式，可根据需要使用
-		in.close();              //关闭文件
+		in >> ch;                //??????????????????????????????????????????
+		in.close();              //??????
 		cout << ch << endl;
 	}
     return 0;
 }
 /***************************************************************************
-  函数名称：ShutDown
-  功    能：退出程序
+  ?????????ShutDown
+  ??    ??????????
 ***************************************************************************/
 int Editor::ShutDown() { 
     GetConsoleScreenBufferInfo(hOutput, &csbi);
