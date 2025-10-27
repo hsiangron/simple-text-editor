@@ -1,15 +1,23 @@
-# mini-vim
-MINI VIM 编辑器
-【问题描述】
-现要求你设计出一个基于 c/c++ 语言的简易 vim 编辑器。
-【基本要求】
-1.	在命令行模式下，实现 vim  的一些基本功能，必须实现的功能包括以下内容：
-2.	编辑器有两个模式，normal 和 insert 模式，其中 normal 为默认模式
-3.	normal 模式下，所有输入将被视为指令，其中以符号开头的指令将被打印在窗口缓冲区的最下方，按回车结束，执行指令
-4.	输入 u，该字母不在窗口缓冲区回显，表示进行一步撤销操作，这里的撤销是指撤销上一步的操作，比如：1. 上一步操作插入了多个字符，那么撤销是指将该次操作添加的所有字符都撤销，也就是删除。2. 上一步的操作是删除操作，那么撤销是指撤销该步"删除操作"，将删除的字符重新插入。
-5.	输入 x, 该字母不在窗口缓冲区回显，删除当前光标处的一个字符
-6.	输入/pattern 进行全文搜索，其中 pattern 为搜索的关键字（可以替换为任意字符串），需要从光标处向后搜索直到找到第一处符合的地方，光标跳转至该位置
-7.	在 normal 模式下使用 h j k l 分别表示光标向左下上右移动
-8.  插入模式主要功能为键入字符，所有输入字符都应被如实显示到光标处。
-9.	bonus（选做）：当文本内容超过一个屏幕的内容就会涉及翻页，请让你的编辑器支持这个功能
-10.	bonus（选做）：撤销操作的反操作为重做，即重做被撤销的操作，请编写功能并支持多步撤销及多步重做
+# simple-text-editor
+simple-text-editor is a lightweight command-line text editor implemented in C/C++. It is inspired by the classic Vim editor and provides essential editing functionalities in a simplified form. This project is ideal for learning about text editor internals, command parsing, and buffer management.
+
+## Features
+
+- **Modes**:
+  - **Normal Mode** (default): Interpret input as commands.
+  - **Insert Mode**: Input characters are inserted at the cursor location.
+
+- **Normal Mode Commands**:
+  - `u`: Undo the last operation (insertions or deletions). Multiple-step undo is supported.
+  - `x`: Delete the character under the cursor.
+  - `/pattern`: Search forward for a string `pattern` from the current cursor position.
+  - `h`, `j`, `k`, `l`: Move the cursor left, down, up, and right, respectively.
+  - Commands starting with a symbol (like `:`) are displayed in the status line and executed after pressing Enter.
+
+- **Insert Mode**:
+  - Insert characters at the current cursor location.
+  - All input characters are displayed as they are typed.
+
+- **Bonus Features**:
+  - Support for scrolling when text exceeds the screen size.
+  - Multi-step undo/redo: undo operations can be redone.
